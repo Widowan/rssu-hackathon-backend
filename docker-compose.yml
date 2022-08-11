@@ -1,0 +1,30 @@
+services:
+  backend:
+    image: backend-rssu-hackathon:latest
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/rssu-hackathon
+      - SPRING_DATASOURCE_USERNAME=hackathon
+      - SPRING_DATASOURCE_PASSWORD=SuperSecretPassword
+      - SPRING_SERVER_PORT=8081
+      - URL_URL=http://example.com
+      - URL_STATIC_PATH=/static/
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=rssu-hackathon
+      - POSTGRES_USER=hackathon
+      - POSTGRES_PASSWORD=SuperSecretPassword
+    volumes:
+      - "./setup_db.sql:/docker-entrypoint-initdb.d/setup_db.sql"
+    healthcheck:
+      test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 10s
+      timeout: 2s
+      retries: 10
