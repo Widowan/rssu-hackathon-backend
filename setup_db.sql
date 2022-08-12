@@ -1,16 +1,3 @@
--- -- Create DB if not exists
--- SELECT 'CREATE DATABASE "rssu-hackathon"'
--- WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'rssu-hackathon')\gexec
--- -- Create user if not exists
--- DO $$
--- BEGIN
--- IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'hackathon') THEN
---     CREATE USER hackathon WITH PASSWORD 'SuperSecretPassword' SUPERUSER;
---     GRANT ALL PRIVILEGES ON DATABASE "rssu-hackathon" TO hackathon;
--- END IF;
--- END
--- $$;
-
 BEGIN;
 CREATE TABLE IF NOT EXISTS Users(
     id            SERIAL PRIMARY KEY,
@@ -20,7 +7,7 @@ CREATE TABLE IF NOT EXISTS Users(
 );
 CREATE TABLE IF NOT EXISTS UserTokens(
     -- TODO: Make userid pk and update tokens instead of creating new
-    user_id     INTEGER  NOT NULL,
+    user_id     INTEGER  NOT NULL REFERENCES Users(id),
     token       CHAR(32) NOT NULL PRIMARY KEY,
     -- TODO: Replace integer with proper timestamp
     expiry_time BIGINT   NOT NULL

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameResultController {
     OldUserRepository userRepository;
     UserPrimitiveTokensRepository userPrimitiveTokensRepository;
-    GameResultRepository gameResultRepository;
+    OldGameResultRepository gameResultRepository;
     OldGameRepository gameRepository;
     static final Logger log = LoggerFactory.getLogger(GameResultController.class);
 
@@ -97,7 +97,7 @@ public class GameResultController {
 
     public GameResultController(OldUserRepository userRepository,
             UserPrimitiveTokensRepository userPrimitiveTokensRepository,
-            GameResultRepository gameResultRepository,
+            OldGameResultRepository gameResultRepository,
             OldGameRepository gameRepository
     ) {
         this.gameResultRepository = gameResultRepository;

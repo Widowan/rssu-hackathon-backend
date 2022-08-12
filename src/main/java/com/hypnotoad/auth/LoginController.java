@@ -2,19 +2,26 @@ package com.hypnotoad.auth;
 
 import com.hypnotoad.auth.password.PasswordHasher;
 import com.hypnotoad.auth.token.UserPrimitiveTokensRepository;
+import com.hypnotoad.gameresults.GameResultRepository;
+import com.hypnotoad.games.GameRepository;
 import com.hypnotoad.responses.FailResponse;
 import com.hypnotoad.responses.Response;
 import com.hypnotoad.responses.SuccessResponse;
 import com.hypnotoad.responses.auth.AuthResponse;
 import com.hypnotoad.responses.auth.GetMeResponse;
 import com.hypnotoad.users.OldUserRepository;
+import com.hypnotoad.users.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 // FIXME: Token checking into aspects
 @RestController
@@ -23,6 +30,12 @@ public class LoginController {
     PasswordHasher passwordHasher;
     UserPrimitiveTokensRepository userPrimitiveTokensRepository;
     static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    @Autowired
+    GameResultRepository gameResultRepository;
+    @Autowired
+    GameRepository gameRepository;
+    @Autowired
+    UserRepository newUserRepository;
 
     @GetMapping("/api/signUp")
     @PostMapping("/api/signUp")
@@ -160,6 +173,15 @@ public class LoginController {
         }
 
         return ResponseEntity.status(200).body(new SuccessResponse("Success"));
+    }
+
+    @GetMapping("/api/testMe")
+    public void testMe() {
+        var game = gameRepository.findById(1).get();
+        var user = newUserRepository.findById(1).get();
+        var date = LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.UTC);
+        var a = gameResultRepository.findGameTotalResultByUserAndGameAndDateTimestampIsAfter(user, game, date);
+        log.info("{}", a);
     }
 
     public LoginController(
