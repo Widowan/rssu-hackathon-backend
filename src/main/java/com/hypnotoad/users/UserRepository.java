@@ -13,6 +13,8 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByUsername(String username);
 
+    boolean existsByUsername(String username);
+
     List<User> findByPasswordHash(String passwordHash);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)

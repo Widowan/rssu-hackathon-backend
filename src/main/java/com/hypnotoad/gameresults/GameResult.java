@@ -1,6 +1,6 @@
 package com.hypnotoad.gameresults;
 
-import com.hypnotoad.customTypes.IntegerTimestampConverter;
+import com.hypnotoad.configurations.customTypes.IntegerTimestampConverter;
 import com.hypnotoad.games.Game;
 import com.hypnotoad.users.User;
 import lombok.*;

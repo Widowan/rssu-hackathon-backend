@@ -1,4 +1,4 @@
-package com.hypnotoad.customTypes;
+package com.hypnotoad.configurations.customTypes;
 
 import com.hypnotoad.games.Game;
 import com.hypnotoad.users.User;

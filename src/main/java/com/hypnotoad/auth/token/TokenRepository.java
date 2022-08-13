@@ -10,13 +10,17 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface TokenRepository extends JpaRepository<Token, String> {
-    // TODO: Automatic purging
-    boolean existsByTokenAndExpiryTimeBefore(String token, LocalDateTime now);
+    boolean existsByTokenAndExpiryTimeIsAfter(String token, LocalDateTime now);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     void deleteAllByUser(User user);
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("update Token ut set ut.expiryTime = :time where ut.user = :user")
-    void setExpiryTimeByUser(User user, LocalDateTime time);
+    void updateExpiryTimeByUser(User user, LocalDateTime time);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    void deleteAllByExpiryTimeBefore(LocalDateTime now);
+
+    Token findByTokenAndExpiryTimeIsAfter(String token, LocalDateTime now);
 }

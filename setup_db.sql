@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS Users(
     id            SERIAL PRIMARY KEY,
     username      VARCHAR(64) NOT NULL UNIQUE,
     password_hash CHAR(128)   NOT NULL,
-    avatar        TEXT        NOT NULL DEFAULT 'avatar1.svg'
+    avatar        TEXT            NULL
 );
 CREATE TABLE IF NOT EXISTS UserTokens(
     -- TODO: Make userid pk and update tokens instead of creating new
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Games(
     name        TEXT NOT NULL UNIQUE,
     description TEXT NOT NULL,
     rules       TEXT NOT NULL,
-    icon        TEXT NOT NULL DEFAULT 'gameIcon1.svg'
+    icon        TEXT     NULL
 );
 CREATE TABLE IF NOT EXISTS GameResults(
     id             SERIAL  PRIMARY KEY,

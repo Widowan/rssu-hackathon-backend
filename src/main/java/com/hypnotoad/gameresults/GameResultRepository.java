@@ -1,6 +1,6 @@
 package com.hypnotoad.gameresults;
 
-import com.hypnotoad.customTypes.GameTotalResult;
+import com.hypnotoad.configurations.customTypes.GameTotalResult;
 import com.hypnotoad.games.Game;
 import com.hypnotoad.users.User;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ public interface GameResultRepository extends JpaRepository<GameResult, Integer>
     GameTotalResult findGameTotalResultByUserAndGameAndDateTimestampIsAfter(User user, Game game, LocalDateTime date);
 
     @Query("""
-        select g.user, :game, sum(g.score) as s from GameResult g
+        select g.user, g.game, sum(g.score) as s from GameResult g
         where g.game = :game and g.dateTimestamp > :dateTime
         group by g.user order by s desc""")
     List<GameTotalResult> findLeaderboardByGameAndDateTimestampAfter(Game game, LocalDateTime dateTime, Pageable pageable);

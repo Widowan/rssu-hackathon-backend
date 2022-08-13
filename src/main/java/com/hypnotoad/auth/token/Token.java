@@ -1,6 +1,6 @@
 package com.hypnotoad.auth.token;
 
-import com.hypnotoad.customTypes.IntegerTimestampConverter;
+import com.hypnotoad.configurations.customTypes.IntegerTimestampConverter;
 import com.hypnotoad.users.User;
 import lombok.*;
 
