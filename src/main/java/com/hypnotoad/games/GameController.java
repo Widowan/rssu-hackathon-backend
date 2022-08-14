@@ -1,61 +1,46 @@
 package com.hypnotoad.games;
 
-import com.hypnotoad.responses.FailResponse;
 import com.hypnotoad.responses.Response;
 import com.hypnotoad.responses.game.AllGamesResponse;
 import com.hypnotoad.responses.game.GameResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @RestController
 public class GameController {
-    OldGameRepository gameRepository;
-    static final Logger log = LoggerFactory.getLogger(GameController.class);
+    final GameService gameService;
 
-    @GetMapping("/api/getGameById")
-    public ResponseEntity<Response> getGameById(@RequestParam int id) {
-        log.debug("getGameById issued with id {}", id);
-
-        var game = gameRepository.findById(id);
-        if (game == null) {
-            log.debug("Such game doesn't exists");
-            return ResponseEntity.status(401).body(new FailResponse("Game doesn't exists"));
-        }
-
-        return ResponseEntity.status(200).body(new GameResponse(game));
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
-    @GetMapping("/api/getGameByName")
-    public ResponseEntity<Response> getGameByName(@RequestParam String name) {
-        log.debug("getGameByName issued with name {}", name);
-
-        var game = gameRepository.findByName(name);
-        if (game == null) {
-            log.debug("Such game doesn't exists");
-            return ResponseEntity.status(401).body(new FailResponse("Game doesn't exists"));
-        }
-
-        return ResponseEntity.status(200).body(new GameResponse(game));
+    @GetMapping("/api/v2/games/get/game/{gameId}")
+    public ResponseEntity<Response> getGameById(@Valid GameId gameId) {
+        var r = gameService.getById(gameId.gameId());
+        return ResponseEntity.ok().body(new GameResponse(r));
     }
 
-    @GetMapping("/api/getAllGames")
+    @GetMapping("/api/v2/games/get/name/{name}")
+    public ResponseEntity<Response> getGameByName(@Valid
+            @NotBlank(message = "Name cannot be empty")
+            @Size(max = 128, message = "Name cannot be longer than 128 characters")
+            @PathVariable
+            String name) {
+        var r = gameService.getByName(name);
+        return ResponseEntity.ok().body(new GameResponse(r));
+    }
+
+    @GetMapping("/api/v2/games/get/all")
     public ResponseEntity<Response> getAllGames() {
-        log.debug("getAllGames issued");
-
-        var games = gameRepository.findAll();
-        if (games == null) {
-            log.debug("Found null, expected empty list");
-            return ResponseEntity.status(500).body(new FailResponse("Couldn't access the database"));
-        }
-
-        return ResponseEntity.status(200).body(new AllGamesResponse(games));
-    }
-
-    public GameController(OldGameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+        var r = gameService.getAllGames();
+        return ResponseEntity.ok().body(new AllGamesResponse(r));
     }
 }

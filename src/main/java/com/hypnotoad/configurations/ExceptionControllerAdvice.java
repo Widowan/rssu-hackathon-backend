@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ValidationException;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
@@ -21,6 +22,11 @@ public class ExceptionControllerAdvice {
                 new FailResponse(errors.getFieldError().getDefaultMessage()));
         return ResponseEntity.badRequest().body(
             new FailResponse(errors.getGlobalError().getDefaultMessage()));
+    }
+
+    @ExceptionHandler({NoSuchElementException.class, NullPointerException.class})
+    public ResponseEntity<FailResponse> nullHandler(Exception ex) {
+        return ResponseEntity.badRequest().body(new FailResponse("Bad Request"));
     }
 
     @ExceptionHandler(ValidationException.class)

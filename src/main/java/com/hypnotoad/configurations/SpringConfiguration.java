@@ -14,7 +14,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.time.Clock;
 
 @Configuration
-@PropertySource("classpath:datasourceSecrets.properties")
 @EnableScheduling
 public class SpringConfiguration {
     @Bean
@@ -28,21 +27,6 @@ public class SpringConfiguration {
                         .allowedHeaders("*");
             }
         };
-    }
-
-    @Bean
-    public String hackathonUrl(@Value("${url.url}") String url) {
-        return url;
-    }
-
-    @Bean
-    public String staticPath(@Value("${url.static.path}") String staticPath) {
-        return staticPath;
-    }
-
-    @Bean
-    public String staticUrl(String hackathonUrl, String staticPath) {
-        return hackathonUrl + staticPath;
     }
 
     @Bean
