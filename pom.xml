@@ -23,6 +23,12 @@
 		</repository>
 	</repositories>
 	<dependencies>
+		<!--Aspect4Log-->
+		<dependency>
+			<groupId>net.sf.aspect4log</groupId>
+			<artifactId>aspect4log</artifactId>
+			<version>1.0.7</version>
+		</dependency>
 		<!--Model mapper-->
 		<dependency>
 			<groupId>org.modelmapper</groupId>

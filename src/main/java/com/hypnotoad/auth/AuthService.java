@@ -10,7 +10,6 @@ import com.hypnotoad.users.UserDto;
 import com.hypnotoad.users.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +36,7 @@ public class AuthService {
     @Transactional
     public Token signUpUser(UserCredentialsSignUp creds) {
         var user = User.builder()
-            .username(creds.username())
+            .username(creds.username().username())
             .passwordHash(passwordHasher.hash(creds.password()))
             .build();
         userRepository.save(user);
@@ -50,7 +49,7 @@ public class AuthService {
     public Token signInUser(UserCredentialsSignIn creds) {
         var passwordHash = passwordHasher.hash(creds.password());
 
-        var userWithThisUsername = userRepository.findByUsername(creds.username());
+        var userWithThisUsername = userRepository.findByUsername(creds.username().username());
         if (!passwordHash.equals(userWithThisUsername.getPasswordHash()))
             throw new ValidationException("Incorrect password");
 

@@ -15,6 +15,29 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "gameresults")
+// Q: What the fuck is this?
+// A: Hibernate bug, see GameResultRepository.java
+@NamedNativeQuery(query = """
+    SELECT g.user_id, g.game_id, sum(g.score) AS score
+    FROM gameresults g WHERE g.game_id = :game AND g.date_timestamp > :intEpoch
+    GROUP BY g.user_id, g.game_id ORDER BY score DESC""",
+    name = "GameResult.getLeaderboardByGameIdAndAfterRawIntTimestamp",
+    resultSetMapping = "Mapping.GameTotalResult")
+@NamedNativeQuery(query = """
+    SELECT g.user_id, g.game_id, sum(g.score) AS score FROM gameresults g
+    WHERE g.user_id = :user AND g.game_id = :game AND g.date_timestamp > :intEpoch
+    GROUP BY g.game_id, g.user_id""",
+    name = "GameResult.getGameTotalResultByUserAndGameAndDateTimestampIsAfter",
+    resultSetMapping = "Mapping.GameTotalResult")
+@SqlResultSetMapping(
+    name = "Mapping.GameTotalResult",
+    classes = @ConstructorResult(
+        targetClass = GameTotalResultRaw.class,
+        columns = {
+            @ColumnResult(name = "user_id", type = Integer.class),
+            @ColumnResult(name = "game_id", type = Integer.class),
+            @ColumnResult(name = "score",   type = Long.class)
+        }))
 public class GameResult {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gameresults_id_seq")

@@ -21,5 +21,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("update User u set u.avatar = :avatar where u.id = :id")
     boolean updateAvatarById(int id, String avatar);
 
-    User getUserByTokenAndToken_ExpiryTimeBefore(Token token, LocalDateTime now);
+    User findUserByTokenAndToken_ExpiryTimeAfter(Token token, LocalDateTime now);
+
+    User findUserByToken_TokenAndToken_ExpiryTimeAfter(String token, LocalDateTime now);
 }

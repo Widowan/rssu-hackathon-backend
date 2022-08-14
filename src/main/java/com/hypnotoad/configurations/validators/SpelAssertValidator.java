@@ -1,7 +1,6 @@
 package com.hypnotoad.configurations.validators;
 
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -14,15 +13,17 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class SpelAssertValidator implements ConstraintValidator<SpelAssert, String>, BeanFactoryAware {
+public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Object>, BeanFactoryAware {
     @Autowired SpelExpressionParser spelExpressionParser;
     Expression expr;
+    Class<?> cast;
     BeanFactory beanFactory;
 
     @Override
     public void initialize(SpelAssert constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
         expr = spelExpressionParser.parseExpression(constraintAnnotation.expr());
+        cast = constraintAnnotation.cast();
     }
 
     @Override
@@ -31,11 +32,11 @@ public class SpelAssertValidator implements ConstraintValidator<SpelAssert, Stri
     }
 
     @SuppressWarnings("ConstantConditions")
-    @SneakyThrows
     @Override
-    public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-        var ctx = new StandardEvaluationContext(str);
+    public boolean isValid(Object o, ConstraintValidatorContext constraintValidatorContext) {
+        StandardEvaluationContext ctx = new StandardEvaluationContext(o.getClass().cast(o));
+
         ctx.setBeanResolver(new BeanFactoryResolver(beanFactory));
-        return (boolean)expr.getValue(ctx);
+        return (boolean) expr.getValue(ctx);
     }
 }

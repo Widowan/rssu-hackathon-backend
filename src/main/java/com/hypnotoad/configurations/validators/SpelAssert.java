@@ -13,4 +13,5 @@ public @interface SpelAssert {
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     String expr();
+    Class<?> cast() default Void.class;
 }
